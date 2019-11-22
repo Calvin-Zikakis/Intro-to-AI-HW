@@ -67,7 +67,6 @@ class HopfieldNetwork:
 		#HopfieldNotes.pdf on canvas is a good reference for asynchronous updating which
 		#has generally better convergence properties than synchronous updating.
 
-		previous_input_pattern = inputPattern
 		changes = 1
 		temp = 0
 
@@ -84,13 +83,11 @@ class HopfieldNetwork:
 
 				if (temp >= 0 and inputPattern[i] == 0):
 					inputPattern[i] = 1
+					changes+=1
 
-				elif(inputPattern[i] == 1):
+				elif(temp < 0 and inputPattern[i] == 1):
 					inputPattern[i] = 0
-
-			if not np.array_equal(inputPattern, previous_input_pattern):
-				changes += 1
-				previous_input_pattern = inputPattern
+					changes+=1
 
 		return inputPattern
 				
@@ -101,8 +98,8 @@ class HopfieldNetwork:
 		#Compare the returned pattern to the 'perfect' instances
 		#return a string classification 'five', 'two' or 'unknown'
 
-		print(inputPattern, self.retrieve(inputPattern))
-		input_array = np.array(inputPattern)
+		output = self.retrieve(inputPattern)
+		input_array = np.array(output)
 		five_array = np.array(five)
 		two_array = np.array(two)
 
@@ -165,6 +162,7 @@ if __name__ == "__main__":
 	#fit training data
 
 	y_predict = clf.predict(X_test)
+
 	score = metrics.accuracy_score(y_test, y_predict)
 	#using accuracy score metric for testing
 	print("MLP Classifier")
@@ -228,7 +226,7 @@ if __name__ == "__main__":
 		accuracy_sklearn.append(accuracy_sklearn_temp)
 
 
-	'''
+	
 	plt.plot(rates, accuracy_hopfield, color="red")
 	plt.plot(rates, accuracy_sklearn, color="blue")
 	plt.legend(('Self Built Hopfield', 'SKlearn MLP'),loc='upper right')
@@ -237,8 +235,8 @@ if __name__ == "__main__":
 
 	
 	
-	#plt.show()
-	'''
+	plt.show()
+	
 	# ------ Varing layers in MLP ------
 	# ------------- Part 5---------------
 
@@ -324,7 +322,7 @@ if __name__ == "__main__":
 		accuracy_Two_Layer.append(accuracy_Two_Layer_temp)
 		accuracy_Three_Layer.append(accuracy_Three_Layer_temp)
 
-	'''
+	
 	plt.plot(rates, accuracy_One_Layer, color="blue")
 	plt.plot(rates, accuracy_Two_Layer, color="green")
 	plt.plot(rates, accuracy_Three_Layer, color="red")
@@ -333,8 +331,8 @@ if __name__ == "__main__":
 	plt.xlabel("Distortion Rates")
 	plt.ylabel("Accuracy (Percentage)")
 
-	#plt.show()
-	'''
+	plt.show()
+	
 
 
 
