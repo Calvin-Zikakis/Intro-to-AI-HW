@@ -76,6 +76,7 @@ class HopfieldNetwork:
 				changes = 0
 				temp = 0
 
+
 				for j in range(0, len(inputPattern)):
 					if(j != i):
 						temp = (self.h[i][j] * inputPattern[i]) + temp
@@ -90,7 +91,7 @@ class HopfieldNetwork:
 					changes+=1
 
 		return inputPattern
-				
+
 
 	def classify(self, inputPattern):
 		#Classify should consider the input and classify as either, five or two
@@ -99,17 +100,10 @@ class HopfieldNetwork:
 		#return a string classification 'five', 'two' or 'unknown'
 
 		output = self.retrieve(inputPattern)
-		input_array = np.array(output)
-		five_array = np.array(five)
-		two_array = np.array(two)
 
-		five_distace = sum((five_array-input_array)**2)
-		two_distance = sum((two_array-input_array)**2)
-		#calculate distance
-
-		if (five_distace > two_distance):
+		if (np.array_equal(self.retrieve(two), output)):
 			return "two"
-		elif(five_distace < two_distance):
+		elif(np.array_equal(self.retrieve(five), output)):
 			return "five"
 		else:
 			return "unknown"
