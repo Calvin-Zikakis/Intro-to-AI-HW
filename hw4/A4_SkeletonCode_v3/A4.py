@@ -67,6 +67,7 @@ class HopfieldNetwork:
 		#HopfieldNotes.pdf on canvas is a good reference for asynchronous updating which
 		#has generally better convergence properties than synchronous updating.
 
+		previous_input_pattern = inputPattern
 		changes = 1
 		temp = 0
 
@@ -75,7 +76,7 @@ class HopfieldNetwork:
 			for i in range(0, len(inputPattern)):
 				changes = 0
 				temp = 0
-				
+
 				for j in range(0, len(inputPattern)):
 					if(j != i):
 						temp = (self.h[i][j] * inputPattern[i]) + temp
@@ -83,18 +84,16 @@ class HopfieldNetwork:
 
 				if (temp >= 0 and inputPattern[i] == 0):
 					inputPattern[i] = 1
-					changes += 1
 
 				elif(inputPattern[i] == 1):
 					inputPattern[i] = 0
-					changes += 1
+
+			if not np.array_equal(inputPattern, previous_input_pattern):
+				changes += 1
+				previous_input_pattern = inputPattern
 
 		return inputPattern
 				
-						
-
-
-
 
 	def classify(self, inputPattern):
 		#Classify should consider the input and classify as either, five or two
@@ -102,7 +101,7 @@ class HopfieldNetwork:
 		#Compare the returned pattern to the 'perfect' instances
 		#return a string classification 'five', 'two' or 'unknown'
 
-
+		print(inputPattern, self.retrieve(inputPattern))
 		input_array = np.array(inputPattern)
 		five_array = np.array(five)
 		two_array = np.array(two)
@@ -118,8 +117,6 @@ class HopfieldNetwork:
 		else:
 			return "unknown"
 		#return result
-
-
 
 
 
@@ -339,7 +336,6 @@ if __name__ == "__main__":
 	#plt.show()
 	'''
 
-	print("end")
 
 
 
