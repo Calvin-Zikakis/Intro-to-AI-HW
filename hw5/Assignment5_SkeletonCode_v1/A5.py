@@ -117,9 +117,14 @@ def trainFaceClassifier(preProcessedImages, labels):
 
 
 	model = Sequential()
-	model.add(Dense(270, input_shape=(in_shape,)))
-	model.add(Activation('relu'))                            
+	model.add(Dense(275, input_shape=(in_shape,)))
+	model.add(Activation('relu'))
 
+	model.add(Dense(72))
+	model.add(Activation('relu'))
+
+	model.add(Dropout(.1))
+	
 	model.add(Dense(6))
 	model.add(Activation('softmax'))
 
@@ -127,7 +132,7 @@ def trainFaceClassifier(preProcessedImages, labels):
 	model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
 
 
-	history = model.fit(X_train, y_train,batch_size=128, epochs=20,verbose=2,validation_data=(X_valid, y_valid))
+	history = model.fit(X_train, y_train,batch_size=18, epochs=50,verbose=2,validation_data=(X_valid, y_valid))
 
 
 	score = model.evaluate(X_test, y_test, verbose=0)
@@ -184,7 +189,7 @@ if __name__ == '__main__':
 	
 
 	#-------------- the code below preprocesses the images and stores them in a folder inside the uncropped folder. This take a while so it is commented out--------------
-	'''
+	
 	path = 'uncropped'
 	filenames = []
 	folder = os.fsencode(path)
@@ -197,7 +202,7 @@ if __name__ == '__main__':
 	
 	preProcessImages(filenames)
 	
-	'''
+
 	#-------------- this section of the code pulls the names from the cropped folder--------------
 	path = 'cropped'
 	filenames = []
@@ -245,7 +250,6 @@ if __name__ == '__main__':
 	flattened_images = np.array(flattened_images)
 	#flattens images and creates labels
 
-	print(flattened_images.shape)
 	#--------------MNIST Classifier--------------
 
 
@@ -262,13 +266,16 @@ if __name__ == '__main__':
 	r_array, result = getVGGFeatures(filename_path,"block4_pool")
 	result = np.asarray(result)
 
+
 	result_list = []
+
 
 	for i in range(len(filename_path)):
 		result_list.append(result[i].flatten())
 
 
 	result = np.array(result_list)
+
 
 
 	model = trainFaceClassifier_VGG(result, labels)
